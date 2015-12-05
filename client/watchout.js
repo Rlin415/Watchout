@@ -1,5 +1,4 @@
 // start slingin' some d3 here.
-//var image =  url('asteroid.png');
 var width = 960;
 var height = 500;
 var data = [];
@@ -12,7 +11,8 @@ var board = d3.select('.board')
   .attr('height', 500)
   .append('g');
 
-function army(dat) {
+var army = function(data) {
+
   var asteroids = board.selectAll("image")
    .data(data);
 
@@ -23,13 +23,33 @@ function army(dat) {
     .attr('height', '5%')
     .attr('width', '5%')
     .attr('xlink:href', "./asteroid.png");
-}
+};
+
 
 ambush = setInterval(function() {
   count++;
-  if (count === 30) {
+  if (count === 50) {
     clearInterval(ambush);
   }
-  data.push(0);
+  data.push({});
   army(data);
-}, 100);
+}, 250);
+
+var move = setInterval(function(){
+  var asteroids = board.selectAll('image').data(data);
+
+  asteroids
+    .transition().duration(900)
+    //use a function so that it forces d3 to invoque it
+    //call math.random every time
+    .attr('x', function () {return Math.floor(Math.random() * 900)})
+    .attr("y", function () {return Math.floor(Math.random() * 390)});
+}, 500);
+
+
+//So if we want to make it move to the right,
+//we are going to update the x attribute. That’s how we do it:
+
+// mySquare
+//   .transition()
+//   .attr("x",320);
