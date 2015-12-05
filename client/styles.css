@@ -4,5 +4,5 @@
 Feel free to use it if you like. */
 .board {
   border: 10px dotted black;
-  background-image: url('galaxy.jpg');
+  background-image: url('images/galaxy.jpg');
 }

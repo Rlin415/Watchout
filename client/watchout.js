@@ -4,25 +4,31 @@ var height = 500;
 var data = [];
 var count = 0;
 var ambush;
+var board;
+var army;
+var asteroids;
+var destroyer;
+var drag;
 
-var board = d3.select('.board')
+board = d3.select('.board')
   .append('svg')
   .attr('width', 1000)
   .attr('height', 500)
   .append('g');
 
-var army = function(data) {
+army = function(data) {
 
-  var asteroids = board.selectAll("image")
+  asteroids = board.selectAll(".army")
    .data(data);
 
   asteroids.enter()
     .append("svg:image")
+    .attr('class', 'army')
     .attr("x", Math.floor(Math.random() * 900))
     .attr("y", Math.floor(Math.random() * 390))
     .attr('height', '5%')
     .attr('width', '5%')
-    .attr('xlink:href', "./asteroid.png");
+    .attr('xlink:href', "images/asteroid.png");
 };
 
 
@@ -31,25 +37,43 @@ ambush = setInterval(function() {
   if (count === 50) {
     clearInterval(ambush);
   }
-  data.push({});
+  data.push(0);
   army(data);
 }, 250);
 
-var move = setInterval(function(){
-  var asteroids = board.selectAll('image').data(data);
+move = setInterval(function(){
+  asteroids = board.selectAll('.army').data(data);
 
   asteroids
     .transition().duration(900)
     //use a function so that it forces d3 to invoque it
     //call math.random every time
-    .attr('x', function () {return Math.floor(Math.random() * 900)})
-    .attr("y", function () {return Math.floor(Math.random() * 390)});
-}, 500);
+    .attr('x', function () {return Math.floor(Math.random() * 900);})
+    .attr("y", function () {return Math.floor(Math.random() * 390);});
+}, 1000);
 
 
-//So if we want to make it move to the right,
-//we are going to update the x attribute. That’s how we do it:
+//create our astorid
+destroyer = {'x': 500, 'y': 250};
 
-// mySquare
-//   .transition()
-//   .attr("x",320);
+drag = d3.behavior.drag()
+  .on('drag', function(d, i) {
+    d.x += d3.event.dx;
+    d.y += d3.event.dy;
+    d3.select(this).attr('x', function(d) {
+      return d.x;
+    });
+    d3.select(this).attr('y', function(d) {
+      return d.y;
+    });
+  });
+
+board.append("svg:image")
+  .data([destroyer])
+  .attr('id', 'destroyer')
+  .attr('x', destroyer.x)
+  .attr('y', destroyer.y)
+  .attr('xlink:href', "images/8ball_with_flames.png")
+  .attr('height', '10%')
+  .attr('width', '10%')
+  .call(drag);
